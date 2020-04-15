@@ -33,3 +33,28 @@ main()
     	pro[i]=pro[pos];
     	pro[pos]=temp;
 	}
+	wait_time[0]=0;            
+	for(i=1;i<n;i++)
+	{
+    	wait_time[i]=0;
+    	for(j=0;j<i;j++)
+        wait_time[i]+=burst_time[j];
+    	total+=wait_time[i];
+	}
+	avg_waiting_time=(float)total/n; 
+	total=0;
+	printf("\nResults:---------------------\n");
+	printf("\nProcess\t    Burst Time    \tWaiting Time\tTurnaround Time");
+   	for(i=0;i<n;i++)
+   	{
+       turn_around_time[i]=burst_time[i]+wait_time[i];     
+       total+=turn_around_time[i];
+       printf("\np%d\t\t  %d\t\t    %d\t\t\t%d",pro[i],burst_time[i],wait_time[i],turn_around_time[i]);
+   	}
+   	avg_turn_around_time=(float)total/n;    
+   	printf("\n\nAverage Waiting Time=%f",avg_waiting_time);
+   	printf("\nAverage Turnaround Time=%f\n",avg_turn_around_time);
+   	fclose(text);
+   	return 0;
+
+}
