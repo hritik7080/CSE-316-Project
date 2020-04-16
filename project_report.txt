@@ -1,0 +1,148 @@
+NAME: Hritik Gupta
+REG NO: 11802715
+Email: hritikgupta7080@gmail.com
+GitHub Link: https://github.com/hritik7080/CSE-316-Project
+
+QUESTION-9
+Write a program in C which reads input CPU bursts from a the first line of a text file named as CPU_BURST.txt. Validate the input numbers whether the numbers are positive intergers or not. Consider the numbers as CPU burst.If there are 5 positive integers in the first line of the text file then the program treat those argument as required CPU bust for P1, P2, P3, P4, and P5 process and calculate average waiting time and average turn around time. Consider used scheduling algorithm as SJF and same arrival time for all the processes. 
+
+EXPLANANTION:
+So,here we have written a program where we create a text file first  and then read input CPU bursts from the first line of a text file.And ,now we have to validate whether the number is positive interger or not.And then consider that number as CPU burst.And the number of intergers In in the first line of txt file are choosed as the process for CPU burst and then we calculate the average waiting time and average turn around time.
+Shortest Job First (SJF) is an algorithm in which the process having the smallest execution time is chosen for the next execution. This scheduling method can be preemptive or non-preemptive. It significantly reduces the average waiting time for other processes awaiting execution. 
+It is associated with each job as a unit of time to complete.
+•	This algorithm method is helpful for batch-type processing, where waiting for jobs to complete is not critical.
+•	It can improve process throughput by making sure that shorter jobs are executed first, hence possibly have a short turnaround time.
+•	It improves job output by offering shorter jobs, which should be executed first, which mostly have a shorter turnaround time.
+
+
+Algorithm:
+This Algorithm is the premptive version of SJF scheduling. In SRTF, the execution of the process can be stopped after certain amount of time. At the arrival of every process, the short term scheduler schedules the process with the least remaining burst time among the list of available processes and the running process.
+COMPLEXITY IS 0(n^2)
+PURPOSE OF USE:
+•	SJF is frequently used for long term scheduling.
+•	It reduces the average waiting time over FIFO (First in First Out) algorithm.
+•	SJF method gives the lowest average waiting time for a specific set of processes.
+•	It is appropriate for the jobs running in batch, where run times are known in advance.
+
+
+
+CODE SNIPPET:
+#include <stdio.h>
+
+#include <stdlib.h>
+
+#include <string.h>
+
+main()
+
+
+
+{
+
+FILE *text = fopen("./cpu_burst.txt", "r");
+
+int burst_time[20],pro[20],wait_time[20],turn_around_time[20],i=0,j,n=5,total=0,pos,temp;
+
+float avg_waiting_time,avg_turn_around_time;
+
+printf("\nReading------------------\n");
+
+while((getc(text))!=EOF){
+
+fscanf(text, "%d", &burst_time[i]);
+
+if(burst_time[i]>0){
+
+pro[i]=i+1;
+
+i++;
+
+} 
+
+}
+
+n=i;
+
+for(i=0;i<n;i++)
+
+
+
+{
+
+pos=i;
+
+for(j=i+1;j<n;j++)
+
+{
+
+if(burst_time[j]<burst_time[pos])
+
+pos=j;
+
+}
+
+
+
+temp=burst_time[i];
+
+burst_time[i]=burst_time[pos];
+
+burst_time[pos]=temp;
+
+temp=pro[i];
+
+pro[i]=pro[pos];
+
+pro[pos]=temp;
+
+}
+
+wait_time[0]=0; 
+
+for(i=1;i<n;i++)
+
+{
+
+wait_time[i]=0;
+
+for(j=0;j<i;j++)
+
+wait_time[i]+=burst_time[j];
+
+total+=wait_time[i];
+
+}
+
+avg_waiting_time=(float)total/n; 
+
+total=0;
+
+printf("\nResults:---------------------\n");
+
+printf("\nProcess\t Burst Time \tWaiting Time\tTurnaround Time");
+
+for(i=0;i<n;i++)
+
+{
+
+turn_around_time[i]=burst_time[i]+wait_time[i]; 
+
+total+=turn_around_time[i];
+
+printf("\np%d\t\t %d\t\t %d\t\t\t%d",pro[i],burst_time[i],wait_time[i],turn_around_time[i]);
+
+}
+
+avg_turn_around_time=(float)total/n; 
+
+printf("\n\nAverage Waiting Time=%f",avg_waiting_time);
+
+printf("\nAverage Turnaround Time=%f\n",avg_turn_around_time);
+
+fclose(text);
+
+return 0;
+
+
+
+}
