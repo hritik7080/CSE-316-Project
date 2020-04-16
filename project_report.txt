@@ -146,3 +146,249 @@ return 0;
 
 
 }
+
+Boundaries:
+Like shortest job next scheduling, shortest remaining time scheduling is rarely used outside of specialized environments because it requires accurate estimates of the runtime of each process.
+
+
+QUESTION:18
+A uniprocessor system has n number of CPU intensive processes, each process has its own requirement of CPU burst.The process with lowest CPU burst is given the highest priority. A late arriving higher priority process can preempt a currently running process with lower priority. Simulate a scheduler that is scheduling the processes in such a way that higher priority process is never starved due to the execution of lower priority process. What should be its average waiting time and average turnaround time if no two processes are arriving at same time. 
+
+EXLANANTION:
+
+The goal of dynamic priority scheduling is to adapt to dynamically changing progress and form an optimal configuration in self-sustained manner. It can be very hard to produce well-defined policies to achieve the goal depending on the difficulty of a given problem.Earliest deadline first scheduling and Least slack time scheduling are examples of Dynamic priority scheduling algorithms.
+
+Algorithm:
+. With a pre-emptive priority-based scheduler, each task has a priority, and the highest-priority task runs first. If a task with a priority higher than the current task becomes ready to run, the kernel immediately saves the current task’s context in its TCB and switches to the higher-priority task. task 1 is pre-empted by higher-priority task 2, which is then pre-empted by task 3. When task 3 completes, task 2 resumes; likewise, when task 2 completes, task 1 resumes.Although tasks are assigned a priority when they are created, a task’s priority can be changed dynamically using kernel-provided calls. The ability to change task priorities dynamically allows an embedded application the flexibility to adjust to external events as they occur, creating a true real-time, responsive system. Note, however, that misuse of this capability can lead to priority inversions, deadlock, and eventual system failure.
+COMPLEXITY IS 0(n^2)
+
+PURPOSE OF USE:
+CPU scheduling is a process which allows one process to use the CPU while the execution of another process is on hold(in waiting state) due to unavailability of any resource like I/O etc, thereby making full use of CPU .Pre-emptive scheduling helps the cpu to switch between processes even without their full/complete completion. This pre-emptive method uses priority of the processes and the priority dynamically changes making the cpu much harder to keep track and shift between processes.
+
+
+
+
+
+
+CODE SNIPPET:
+
+#include<stdio.h>
+
+
+int n;
+
+struct process
+
+{
+
+
+
+int p_no;
+
+
+
+int arrival_time,burst_time,ct,wait_t,turn_around,p;
+
+
+
+int flag;
+
+}p_list[100];
+
+void Sorting()
+
+{
+
+struct process p;
+
+
+
+int i, j;
+
+
+
+for(i=0;i<n-1;i++)
+
+
+
+{
+
+
+
+for(j=i+1;j<n;j++)
+
+
+
+{
+
+
+
+if(p_list[i].arrival_time > p_list[j].arrival_time)
+
+
+
+{
+
+
+
+p = p_list[i];
+
+
+
+p_list[i] = p_list[j];
+
+
+
+p_list[j] = p;
+
+
+
+}
+
+
+
+}
+
+
+
+}
+
+}
+
+int main()
+
+{
+
+
+
+int i,t=0,b_t=0,peak;
+
+
+
+int a[10];
+
+
+
+float wait_time = 0, turn_around = 0, avg_w_t=0, avg_turn_around=0;
+
+
+
+printf("How many processes? : ");
+
+
+
+scanf("%d",&n);
+
+
+
+for(i = 0; i < n; i++)
+
+
+
+{
+
+
+
+p_list[i].p_no = i+1;
+
+
+
+printf("\nEnter Details For P%d process:-\n", p_list[i].p_no);
+
+printf("Arrival Time: ");
+
+scanf("%d", &p_list[i].arrival_time );
+
+printf("Burst Time: ");
+
+scanf("%d", &p_list[i].burst_time);
+
+p_list[i].flag = 0;
+
+b_t = b_t + p_list[i].burst_time;
+
+}
+
+Sorting();
+
+for(int i=0;i<n;i++)
+
+{
+
+a[i]=p_list[i].burst_time;
+
+}
+
+p_list[9].burst_time = 9999;
+
+for(t = p_list[0].arrival_time; t <= b_t+1;)
+
+{
+
+peak = 9;
+
+for(i=0;i<n;i++)
+
+{
+
+if(p_list[i].arrival_time <= t && p_list[i].burst_time < p_list[peak].burst_time && p_list[i].flag != 1)
+
+{
+
+peak = i;
+
+}
+
+if(p_list[peak].burst_time==0 && p_list[i].flag != 1)
+
+{
+
+p_list[i].flag = 1;
+
+p_list[peak].ct=t;p_list[peak].burst_time=9999;
+
+printf("P%d completing in %d\n",p_list[i].p_no,p_list[peak].ct);
+
+}
+
+}
+
+t++;
+
+(p_list[peak].burst_time)--;
+
+}
+
+for(i=0;i<n;i++)
+
+{
+
+p_list[i].turn_around=(p_list[i].ct)-(p_list[i].arrival_time);
+
+avg_turn_around=avg_turn_around+p_list[i].turn_around;
+
+p_list[i].wait_t=((p_list[i].turn_around)-a[i]);
+
+avg_w_t=avg_w_t+p_list[i].wait_t;
+
+}
+
+printf("PNO\tAT\tCT\tTA\tWTt\n");
+
+for(i=0;i<n;i++)
+
+{
+
+printf("P%d\t%d\t%d\t%d\t%d\n",p_list[i].p_no,p_list[i].arrival_time,p_list[i].ct,p_list[i].turn_around
+
+,p_list[i].wait_t);
+
+}
+
+printf("Avg Turn around Time: %f\t\n\n",avg_turn_around);
+
+printf("Avg Waiting Time :\t %f\t\n",avg_w_t);
+
+}
+
+
